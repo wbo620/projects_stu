@@ -54,7 +54,6 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-      console.log(user);
       // 如果失败去设置用户错误信息
       setUserLoginState(user);
     } catch (error) {
@@ -63,6 +62,7 @@ const Login: React.FC = () => {
     }
   };
   const {status, type: loginType} = userLoginState;
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>

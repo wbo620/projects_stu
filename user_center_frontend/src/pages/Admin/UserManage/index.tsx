@@ -32,8 +32,8 @@ const columns: ProColumns<API.CurrentUser>[] = [
     tip: '用户名过长会自动收缩',
   },
   {
-    title: '用户账户',
-    dataIndex: 'username',
+    title: '用户账号',
+    dataIndex: 'userAccount',
     copyable: true,
   },
   {
@@ -65,6 +65,11 @@ const columns: ProColumns<API.CurrentUser>[] = [
     title: '状态',
     dataIndex: 'userStatus',
 
+  },{
+    title: '星球编号',
+    dataIndex: 'planetCode',
+    copyable: true,
+
   },
   {
     title: '角色',
@@ -72,7 +77,6 @@ const columns: ProColumns<API.CurrentUser>[] = [
     valueType: 'select',
     valueEnum: {
       0: {text: '普通用户',status:'Default'},
-
       1: {
         text: '管理员',
         status: 'Success',

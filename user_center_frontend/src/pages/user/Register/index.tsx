@@ -23,7 +23,7 @@ const Register: React.FC = () => {
     try {
       // 注册
       const id = await register(values);
-      if (id > 0) {
+      if (id) {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
         /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -32,14 +32,11 @@ const Register: React.FC = () => {
 
         //注册成功重定向到登录页面
         history.push({
-          pathname:'/user/login',
+          pathname: '/user/login',
           query,
         });
         return;
-      } else {
-        throw new Error(`register error id=${id}`);
       }
-
     } catch (error) {
       const defaultLoginFailureMessage = '注册失败，请重试！';
       message.error(defaultLoginFailureMessage);
@@ -119,6 +116,20 @@ const Register: React.FC = () => {
                     min: 8,
                     type: 'string',
                     message: '密码长度不能小于8！',
+                  },
+                ]}
+              />
+              <ProFormText
+                name="planetCode"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined className={styles.prefixIcon}/>,
+                }}
+                placeholder={'请输入星球编号'}
+                rules={[
+                  {
+                    required: true,
+                    message: '星球编号是必填项！',
                   },
                 ]}
               />
