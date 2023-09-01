@@ -68,19 +68,21 @@ public class userController {
      * @param request 请求域
      * @return 返回当前登录用户的脱敏信息
      */
+
     @GetMapping("/current")
     public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
-        User currentUser = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
         if (currentUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
-        Long userId = currentUser.getId();
-        //todo 检验用户是否合法
+        long userId = currentUser.getId();
+        // TODO 校验用户是否合法
         User user = userService.getById(userId);
-
         User safetyUser = userService.getSafetyUser(user);
         return ResultUtils.success(safetyUser);
     }
+
 
     /**
      * 登录
@@ -92,15 +94,18 @@ public class userController {
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
-            throw new BusinessException(ErrorCode.NULL_ERROR);
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
 
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            throw new BusinessException(ErrorCode.NULL_ERROR);
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.login(userAccount, userPassword, request);
+        if (user == null){
+    throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号或密码错误,请重试!");
+        }
         return ResultUtils.success(user);
     }
 
@@ -157,7 +162,7 @@ public class userController {
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
         if (id <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"id小于0");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "id小于0");
         }
         boolean remove = userService.removeById(id);
         return ResultUtils.success(remove);

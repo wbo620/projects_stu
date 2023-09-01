@@ -9,6 +9,7 @@ import {history, Link, useModel} from 'umi';
 import styles from './index.less';
 import {PLANET_NET, SYSTEM_LOG} from "@/constats";
 
+
 const LoginMessage: React.FC<{
   content: string;
 }> = ({content}) => (
@@ -41,7 +42,7 @@ const Login: React.FC = () => {
         ...values,
         type,
       });
-      if (user) {
+      if (user!=null) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -61,8 +62,8 @@ const Login: React.FC = () => {
       message.error(defaultLoginFailureMessage);
     }
   };
-  const {status, type: loginType} = userLoginState;
-
+ // const {status, type: loginType} = userLoginState;
+  const {status, type: loginType} = userLoginState ? userLoginState : {};
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -73,7 +74,6 @@ const Login: React.FC = () => {
           initialValues={{
             autoLogin: true,
           }}
-
           onFinish={async (values) => {
             await handleSubmit(values as API.LoginParams);
           }}
@@ -81,7 +81,6 @@ const Login: React.FC = () => {
           <Tabs activeKey={type} onChange={setType}>
             <Tabs.TabPane key="account" tab={'账号密码登录'}/>
           </Tabs>
-
           {status === 'error' && loginType === 'account' && (
             <LoginMessage content={'错误的账号和密码'}/>
           )}
@@ -93,7 +92,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon}/>,
                 }}
-                placeholder={'请输入账号'}
+                placeholder="请输入账号"
                 rules={[
                   {
                     required: true,
@@ -107,27 +106,27 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon}/>,
                 }}
-                placeholder={'请输入密码'}
+                placeholder="请输入密码"
                 rules={[
                   {
                     required: true,
                     message: '密码是必填项！',
-                  }, {
+                  },
+                  {
                     min: 8,
                     type: 'string',
-                    message: '密码长度不能小于8！',
+                    message: '长度不能小于 8',
                   },
                 ]}
               />
             </>
           )}
-
           <div
             style={{
               marginBottom: 24,
             }}
           >
-            <Space split={<Divider type="vertical"/> }>
+            <Space split={<Divider type="vertical"/>}>
               <ProFormCheckbox noStyle name="autoLogin">
                 自动登录
               </ProFormCheckbox>

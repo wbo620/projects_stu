@@ -130,10 +130,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //用户不存在
         if (user == null) {
             log.info("User not found,Please Check your username and password");
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户不存在");
+            return null;
+          //  throw new BusinessException(ErrorCode.NO_USER,"用户不存在");
         }
-
-
         //3.用户脱敏
         User safetyUser = getSafetyUser(user);
 
@@ -151,6 +150,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public User getSafetyUser(User originUser) {
+        if (originUser == null){
+            return null;
+        }
         User safetyUser = new User();
         safetyUser.setId(originUser.getId());
         safetyUser.setUsername(originUser.getUsername());
@@ -168,6 +170,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public int logout(HttpServletRequest request) {
+        //移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return 1;
     }

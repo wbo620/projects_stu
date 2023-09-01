@@ -13,19 +13,20 @@ declare namespace API {
     userStatus: number;
     createTime: Date;
     userRole: number;
-    planetCode:string;
+    planetCode: string;
   };
+
   /**
    * 对接后端
    * 通用返回类
    */
-  type BaseResponse<T>={
-    code:number,
-    data: T,
-    message:string,
-    description:string
-  };
 
+  type BaseResponse<T> = {
+    code: number,
+    data: T,
+    message: string,
+    description: string,
+  }
   type LoginResult = {
     status?: string;
     type?: string;
@@ -65,17 +66,19 @@ declare namespace API {
     status?: string;
   };
 
+
   type LoginParams = {
     userAccount?: string;
     userPassword?: string;
     autoLogin?: boolean;
     type?: string;
   };
+
   type RegisterParams = {
     userAccount?: string;
     userPassword?: string;
     checkPassword?: string;
-    planetCode?:string;
+    planetCode?: string;
     type?: string;
   };
 
