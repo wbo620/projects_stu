@@ -7,6 +7,7 @@ import com.sky.result.PageResult;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface EmployeeMapper {
@@ -22,6 +23,7 @@ public interface EmployeeMapper {
 
     /**
      * 添加员工
+     *
      * @param employee
      * @return
      */
@@ -42,8 +44,21 @@ public interface EmployeeMapper {
 
     /**
      * 修改员工状态
+     *
      * @param employe
      */
     void update(Employee employe);
+
+    /**
+     * 根据ID查询
+     * @param id
+     * @return
+     */
+
+    @Select("select id ,name, username, password, phone, sex, id_number, create_user, update_time,create_time,update_user" +
+            " from employee" +
+            " where id=#{id} ")
+    Employee selectById(Long id);
+
 
 }
