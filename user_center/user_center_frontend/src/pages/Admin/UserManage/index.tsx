@@ -65,7 +65,7 @@ const columns: ProColumns<API.CurrentUser>[] = [
     title: '状态',
     dataIndex: 'userStatus',
 
-  },{
+  }, {
     title: '星球编号',
     dataIndex: 'planetCode',
     copyable: true,
@@ -76,7 +76,7 @@ const columns: ProColumns<API.CurrentUser>[] = [
     dataIndex: 'userRole',
     valueType: 'select',
     valueEnum: {
-      0: {text: '普通用户',status:'Default'},
+      0: {text: '普通用户', status: 'Default'},
       1: {
         text: '管理员',
         status: 'Success',
@@ -135,20 +135,21 @@ const columns: ProColumns<API.CurrentUser>[] = [
     sorter: true,
     hideInSearch: true,
   },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    valueType: 'dateRange',
-    hideInTable: true,
-    search: {
-      transform: (value) => {
-        return {
-          startTime: value[0],
-          endTime: value[1],
-        };
-      },
-    },
-  },
+  //按创建时间查询
+  // {
+  //   title: '创建时间',
+  //   dataIndex: 'createTime',
+  //   valueType: 'dateRange',
+  //   hideInTable: true,
+  //   search: {
+  //     transform: (value) => {
+  //       return {
+  //         startTime: value[0],
+  //         endTime: value[1],
+  //       };
+  //     },
+  //   },
+  // },
   {
     title: '操作',
     valueType: 'option',
@@ -230,6 +231,7 @@ export default () => {
       dateFormatter="string"
       headerTitle="高级表格"
       toolBarRender={() => [
+
         <Button
           key="button"
           icon={<PlusOutlined/>}

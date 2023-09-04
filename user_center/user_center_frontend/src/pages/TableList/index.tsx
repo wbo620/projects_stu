@@ -322,7 +322,10 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
+
     </PageContainer>
+
   );
+
 };
 export default TableList;
