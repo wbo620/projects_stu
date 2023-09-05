@@ -126,4 +126,16 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>name.finsterwalder</groupId>
+            <artifactId>fileutils</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.pityka</groupId>
+            <artifactId>fileutils_2.12</artifactId>
+            <version>1.2.5</version>
+        </dependency>
+    </dependencies>
 </project>
