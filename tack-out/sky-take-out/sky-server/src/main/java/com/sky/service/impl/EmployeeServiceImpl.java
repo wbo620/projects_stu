@@ -72,6 +72,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /**
+     * 添加员工
+     * @param employeeDTO
+     * @return
+     */
     @Override
     public boolean addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();

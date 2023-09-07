@@ -1,12 +1,12 @@
 package com.sky.aspect;
 
+
 import com.sky.annotation.AutoFill;
 import com.sky.constant.AutoFillConstant;
 import com.sky.context.BaseContext;
 import com.sky.enumeration.OperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -35,7 +35,7 @@ public class AutoFillAspect {
      * && @annotation(com.sky.annotation.AutoFill) ")：
      * 这是切点的匹配模式。它表示匹配所有在com.sky.mapper包及其子包下的方法，
      * 且这些方法上带有@AutoFill注解
-     *
+     * <p>
      * 匹配在这个包(* com.sky.mapper.*.*(..)并且带有@AutoFill注解)里的所有方法
      */
     @Pointcut(value = "execution(* com.sky.mapper.*.*(..)) && @annotation(com.sky.annotation.AutoFill) ")
@@ -44,6 +44,7 @@ public class AutoFillAspect {
 
     /**
      * 前置通知,在执行插入或更新数据库之前
+     *
      * @param joinPoint
      */
     @Before("autoFillPointcut()")
