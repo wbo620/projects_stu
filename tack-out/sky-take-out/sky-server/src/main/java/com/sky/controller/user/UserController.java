@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @Api(tags = "用户登录")
 @RequestMapping("/user/user")
 @ResponseBody
-public class UserLoginController {
+public class UserController {
     @Resource
     private UserService userService;
 

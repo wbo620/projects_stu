@@ -32,6 +32,13 @@ public class DishController {
     @Resource
     private DishService dishService;
 
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询")
+    public Result<List<Dish>> list( String categoryId){
+        List<Dish> list=dishService.getByCategoryId(categoryId);
+        return Result.success(list);
+    }
+
     /**
      * 新增菜品
      *
