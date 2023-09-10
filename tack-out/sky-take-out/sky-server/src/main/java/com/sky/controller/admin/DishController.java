@@ -50,6 +50,7 @@ public class DishController {
         return Result.success(list);
     }
 
+
     /**
      * 新增菜品
      *
@@ -124,6 +125,7 @@ public class DishController {
         DishVO dishVO = dishService.getById(id);
         return Result.success(dishVO);
     }
+
 
     /**
      * 更新菜品信息
