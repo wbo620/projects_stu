@@ -17,7 +17,6 @@ import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,7 @@ public class DishServiceImpl implements DishService {
 
 
     /**
-     * 条件查询菜品和口味
+     * 条件查询菜品和口味(客户端)
      *
      * @param dish
      * @return
@@ -69,7 +68,7 @@ public class DishServiceImpl implements DishService {
     }
 
     /**
-     * 根据口味查询菜品
+     * 根据分类id查询菜品(管理端)
      *
      * @param categoryId
      * @return
@@ -77,9 +76,8 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<Dish> getByCategoryId(String categoryId) {
-        Dish dish = Dish.builder().categoryId(Long.valueOf(categoryId)).build();
 
-        List<Dish> list = dishMapper.list(dish);
+        List<Dish> list = dishMapper.getByCategoryId(categoryId);
         return list;
     }
 
