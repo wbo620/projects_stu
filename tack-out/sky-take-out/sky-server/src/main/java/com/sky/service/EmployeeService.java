@@ -10,6 +10,7 @@ public interface EmployeeService {
 
     /**
      * 员工登录
+     *
      * @param employeeLoginDTO
      * @return
      */
@@ -17,6 +18,7 @@ public interface EmployeeService {
 
     /**
      * 添加员工
+     *
      * @param employeeDTO
      * @return
      */
@@ -25,6 +27,7 @@ public interface EmployeeService {
 
     /**
      * 分页查询
+     *
      * @param employeePageQueryDTO
      * @return
      */
@@ -33,6 +36,7 @@ public interface EmployeeService {
 
     /**
      * 修改员工状态
+     *
      * @param status
      * @param id
      */
@@ -41,6 +45,7 @@ public interface EmployeeService {
 
     /**
      * 根据ID查询员工
+     *
      * @param id
      * @return
      */
@@ -49,6 +54,7 @@ public interface EmployeeService {
 
     /**
      * 编辑员工信息
+     *
      * @param employeeDTO
      */
     void update(EmployeeDTO employeeDTO);

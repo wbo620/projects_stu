@@ -32,10 +32,17 @@ public class DishController {
     @Resource
     private DishService dishService;
 
+    /**
+     * 根据菜品分类id查询
+     *
+     * @param categoryId
+     * @return
+     */
+
     @GetMapping("/list")
     @ApiOperation("根据分类id查询")
-    public Result<List<Dish>> list( String categoryId){
-        List<Dish> list=dishService.getByCategoryId(categoryId);
+    public Result<List<Dish>> list(String categoryId) {
+        List<Dish> list = dishService.getByCategoryId(categoryId);
         return Result.success(list);
     }
 
@@ -114,7 +121,7 @@ public class DishController {
      */
     @PutMapping
     @ApiOperation("修改菜品和口味的信息")
-    public Result update(@RequestBody DishDTO dishDTO){
+    public Result update(@RequestBody DishDTO dishDTO) {
         dishService.updateAndFlavor(dishDTO);
         return Result.success();
     }

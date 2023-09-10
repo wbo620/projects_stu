@@ -68,10 +68,18 @@ public class DishServiceImpl implements DishService {
         return dishVOList;
     }
 
+    /**
+     * 根据口味查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
+
     @Override
     public List<Dish> getByCategoryId(String categoryId) {
+        Dish dish = Dish.builder().categoryId(Long.valueOf(categoryId)).build();
 
-        List<Dish> list = dishMapper.getByCategoryId(categoryId);
+        List<Dish> list = dishMapper.list(dish);
         return list;
     }
 

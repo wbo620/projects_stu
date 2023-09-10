@@ -21,6 +21,7 @@ public interface SetmealMapper {
 
     /**
      * 动态条件查询套餐
+     *
      * @param setmeal
      * @return
      */
@@ -28,6 +29,7 @@ public interface SetmealMapper {
 
     /**
      * 根据套餐id查询菜品选项
+     *
      * @param setmealId
      * @return
      */

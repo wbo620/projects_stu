@@ -25,6 +25,7 @@ public interface DishFlavorMapper {
 
     /**
      * 查询口味信息
+     *
      * @param dishId
      * @return
      */
@@ -33,6 +34,7 @@ public interface DishFlavorMapper {
 
     /**
      * 删除旧的口味信息
+     *
      * @param dishId
      */
     @Delete("delete from dish_flavor where dish_id=#{dishId}")

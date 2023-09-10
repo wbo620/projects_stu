@@ -63,6 +63,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .build();
         return docket;
     }
+
     @Bean
     public Docket docket2() {
         ApiInfo apiInfo = new ApiInfoBuilder()

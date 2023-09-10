@@ -25,8 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -74,6 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 添加员工
+     *
      * @param employeeDTO
      * @return
      */
@@ -94,9 +93,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return b;
     }
 
-
     /**
      * 分页查询
+     *
+     * @param employeePageQueryDTO
+     * @return
      */
 
     @Override
@@ -121,6 +122,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.update(employe);
     }
 
+    /**
+     * 查询员工信息
+     *
+     * @param id
+     * @return
+     */
+
     @Override
     public Employee queryById(Long id) {
         Employee employee = employeeMapper.selectById(id);
@@ -129,6 +137,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    /**
+     * 修改员工信息
+     *
+     * @param employeeDTO
+     */
     @Override
     public void update(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();

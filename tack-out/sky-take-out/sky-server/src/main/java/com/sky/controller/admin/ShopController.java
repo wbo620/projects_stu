@@ -40,6 +40,12 @@ public class ShopController {
         return Result.success(status);
     }
 
+    /**
+     * 设置店铺营业转台  状态
+     *
+     * @param status
+     * @return
+     */
     @PutMapping("/{status}")
     @ApiOperation("设置店铺营业状态")
     public Result updateStatus(@PathVariable Integer status) {

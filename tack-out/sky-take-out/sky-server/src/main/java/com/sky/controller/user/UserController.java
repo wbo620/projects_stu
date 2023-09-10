@@ -25,6 +25,13 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    /**
+     * 在小程序端登录
+     *
+     * @param userLoginDTO
+     * @return
+     */
+
     @PostMapping("/login")
     public Result login(@RequestBody UserLoginDTO userLoginDTO) {
 

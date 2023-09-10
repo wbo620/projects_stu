@@ -21,6 +21,13 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
+    /**
+     * 查询用户是否存在
+     *
+     * @param openid
+     * @return
+     */
+
     @Override
     public int getById(String openid) {
 
@@ -31,6 +38,11 @@ public class UserServiceImpl implements UserService {
         return 0;
     }
 
+    /**
+     * 保存用户
+     *
+     * @param openid
+     */
     @Override
     public void save(String openid) {
         User user = new User();
@@ -41,6 +53,12 @@ public class UserServiceImpl implements UserService {
         userMapper.saveUser(user);
     }
 
+    /**
+     * 获取用户信息
+     *
+     * @param openid
+     * @return
+     */
     @Override
     public UserLoginVO getUserByCode(String openid) {
         User user = userMapper.getByOpenid(openid);
