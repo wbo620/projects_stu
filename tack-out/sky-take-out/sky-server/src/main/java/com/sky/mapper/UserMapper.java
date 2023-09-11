@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Map;
+
 /**
  * User: hallen
  * Date: 2023/9/9
@@ -14,31 +16,28 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface UserMapper {
+
     /**
-     * 查询用户是否注册
-     *
+     * 根据openid查询用户
      * @param openid
      * @return
      */
-    @Select("select count(*) from user where openid=#{id}")
-    int getUserById(String openid);
+    @Select("select * from user where openid = #{openid}")
+    User getByOpenid(String openid);
 
     /**
-     * 插入用户信息
-     *
+     * 插入数据
      * @param user
      */
+    void insert(User user);
 
-    @Insert("insert into user (openid, name, phone, sex, id_number, avatar, create_time)" +
-            " VALUES(#{openid},#{name},#{phone},#{sex},#{idNumber},#{avatar},#{createTime}) ")
-    void saveUser(User user);
+    @Select("select * from user where id = #{userId}")
+    User getById(Long userId);
 
     /**
-     * 查询用户信息
-     *
-     * @param openid
+     * 根据动态条件统计用户数量
+     * @param map
      * @return
      */
-    @Select("select id, openid, name, phone, sex, id_number, avatar, create_time from user where openid = #{openid}")
-    User getByOpenid(String openid);
+    Integer countByMap(Map map);
 }

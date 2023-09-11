@@ -1,53 +1,58 @@
 package com.sky.controller.user;
 
+import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.UserLoginDTO;
+import com.sky.entity.User;
+import com.sky.properties.JwtProperties;
 import com.sky.result.Result;
 import com.sky.service.UserService;
+import com.sky.utils.JwtUtil;
 import com.sky.vo.UserLoginVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.annotation.Resource;
-
-/**
- * User: hallen
- * Date: 2023/9/9
- * Time: 15:35
- */
-@Controller
-@Slf4j
-@Api(tags = "用户登录")
+@RestController
 @RequestMapping("/user/user")
-@ResponseBody
+@Api(tags = "C端用户相关接口")
+@Slf4j
 public class UserController {
-    @Resource
+
+    @Autowired
     private UserService userService;
+    @Autowired
+    private JwtProperties jwtProperties;
 
     /**
-     * 在小程序端登录
-     *
+     * 微信登录
      * @param userLoginDTO
      * @return
      */
-
     @PostMapping("/login")
-    public Result login(@RequestBody UserLoginDTO userLoginDTO) {
+    @ApiOperation("微信登录")
+    public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
+        log.info("微信用户登录：{}",userLoginDTO.getCode());
 
-        if (userLoginDTO == null) {
-            return Result.error("登录失败");
-        }
-        //查询数据库用户是否存在
-        int count = userService.getById(userLoginDTO.getCode());
-        if (count == 0) {
-            //不存在,向数据库中插入数据
-            userService.save(userLoginDTO.getCode());
-        }
-        //存在,获取用户信息
-        UserLoginVO userLoginVO = userService.getUserByCode(userLoginDTO.getCode());
+        //微信登录
+        User user = userService.wxLogin(userLoginDTO);
 
+        //为微信用户生成jwt令牌
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaimsConstant.USER_ID,user.getId());
+        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
 
+        UserLoginVO userLoginVO = UserLoginVO.builder()
+                .id(user.getId())
+                .openid(user.getOpenid())
+                .token(token)
+                .build();
         return Result.success(userLoginVO);
     }
 }

@@ -7,12 +7,12 @@ spring:
     active: dev
   main:
     allow-circular-references: true
-#  datasource:
-#    druid:
-#      driver-class-name: ${sky.datasource.driver-class-name}
-#      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-#      username: ${sky.datasource.username}
-#      password: ${sky.datasource.password}
+  #  datasource:
+  #    druid:
+  #      driver-class-name: ${sky.datasource.driver-class-name}
+  #      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+  #      username: ${sky.datasource.username}
+  #      password: ${sky.datasource.password}
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -49,3 +49,26 @@ sky:
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    user-secret-key: itheima
+    user-ttl: 7200000
+    user-token-name: authentication
+  #  alioss:
+  #    endpoint: ${sky.alioss.endpoint}
+  #    access-key-id: ${sky.alioss.access-key-id}
+  #    access-key-secret: ${sky.alioss.access-key-secret}
+  #    bucket-name: ${sky.alioss.bucket-name}
+  wechat:
+    appid: wx803e79c1ffbc094e
+    secret: f99f4d86898eade6bc2ddeca81f9a654
+  #    mchid: ${sky.wechat.mchid}
+  #    mchSerialNo: ${sky.wechat.mchSerialNo}
+  #    privateKeyFilePath: ${sky.wechat.privateKeyFilePath}
+  #    apiV3Key: ${sky.wechat.apiV3Key}
+  #    weChatPayCertFilePath: ${sky.wechat.weChatPayCertFilePath}
+  #    notifyUrl: ${sky.wechat.notifyUrl}
+  #    refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
+  shop:
+    address: 北京市海淀区上地十街10号
+  baidu:
+    ak: your-ak
+
