@@ -68,7 +68,7 @@ public class SetmealServiceImpl implements SetmealService {
      *
      * @param setmealDTO
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveWithDish(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
@@ -86,6 +86,7 @@ public class SetmealServiceImpl implements SetmealService {
 
         //保存套餐和菜品的关联关系
         setmealDishMapper.insertBatch(setmealDishes);
+
     }
 
     /**
@@ -172,7 +173,7 @@ public class SetmealServiceImpl implements SetmealService {
      *
      * @param setmealDTO
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
