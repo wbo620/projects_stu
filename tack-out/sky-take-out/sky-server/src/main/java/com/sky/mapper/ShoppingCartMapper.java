@@ -53,7 +53,7 @@ public interface ShoppingCartMapper {
      * @param userId
      */
     @Delete("delete from shopping_cart where user_id=#{userId}")
-    void clean(Long userId);
+    void deleteByUserId(Long userId);
 
     /**
      * 删除购物车中的一个菜品
@@ -70,4 +70,5 @@ public interface ShoppingCartMapper {
      */
 
     int getNumber(ShoppingCart shoppingCart);
+
 }
