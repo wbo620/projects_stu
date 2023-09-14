@@ -71,4 +71,9 @@ public interface ShoppingCartMapper {
 
     int getNumber(ShoppingCart shoppingCart);
 
+    /**
+     * 批量添加购物车中的数据
+     * @param shoppingCartList
+     */
+    void insertBatch(List<ShoppingCart> shoppingCartList);
 }
