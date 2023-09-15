@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * User: hallen
  * Date: 2023/9/12
@@ -43,19 +46,24 @@ public interface OrderMapper {
 
     /**
      * 根据id查询订单
+     *
      * @param id
      */
     @Select("select * from orders where id=#{id}")
-    Orders getById(Long id);;
+    Orders getById(Long id);
+
+    ;
 
     /**
      * 分页条件查询并按下单时间排序
+     *
      * @param ordersPageQueryDTO
      */
     Page<Orders> pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 
     /**
      * 根据id删除订单
+     *
      * @param id
      */
     @Delete("delete from orders where id=#{id}")
@@ -63,8 +71,19 @@ public interface OrderMapper {
 
     /**
      * 根据状态统计订单数量
+     *
      * @param status
      */
     @Select("select count(id) from orders where status = #{status}")
     Integer countStatus(Integer status);
+
+    /**
+     * 查询待支付和超时的订单
+     *
+     * @param pendingPayment
+     * @param time
+     * @return
+     */
+    @Select("select * from orders where status=#{pendingPayment} and order_time=#{time};")
+    List<Orders> getByStatusAndOrderTimeLT(Integer pendingPayment, LocalDateTime time);
 }
