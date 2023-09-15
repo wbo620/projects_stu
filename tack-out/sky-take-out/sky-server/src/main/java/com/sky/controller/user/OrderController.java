@@ -89,25 +89,44 @@ public class OrderController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 取消订单
+     *
+     * @param id
+     * @return
+     */
+
     @PutMapping("/cancel/{id}")
     @ApiOperation("取消订单")
-    public Result cancel(@PathVariable Long id){
+    public Result cancel(@PathVariable Long id) {
         orderService.cancelById(id);
         return Result.success();
     }
 
+    /**
+     * 再来一单
+     *
+     * @param id
+     * @return
+     */
     @PostMapping("repetition/{id}")
     @ApiOperation("再来一单")
-    public Result repetition(@PathVariable Long id) {
+    public Result repetition(@PathVariable  Long id) {
 
         orderService.repetitionById(id);
         return Result.success();
     }
 
-
+    /**
+     * 用户催单
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/reminder/{id}")
     @ApiOperation("用户催单")
-    public Result reminder(@PathVariable Long id){
+    public Result reminder(@PathVariable Long id) {
+        orderService.reminderById(id);
         return Result.success();
     }
 }

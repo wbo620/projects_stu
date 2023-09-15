@@ -86,7 +86,6 @@ public class DishController {
      *
      * @param ids
      */
-    //TODO 有bug
     @DeleteMapping
     @ApiOperation("批量删除菜品")
     public Result<String> deleteByIds(@RequestParam List<Long> ids) {
