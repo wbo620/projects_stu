@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Delete;
@@ -79,7 +80,7 @@ public interface OrderMapper {
     Integer countStatus(Integer status);
 
     /**
-     * 查询待支付和超时的订单
+     * 根据订单状态和下单时间查询订单
      *
      * @param pendingPayment
      * @param time
@@ -88,5 +89,27 @@ public interface OrderMapper {
     @Select("select * from orders where status=#{pendingPayment} and order_time=#{time};")
     List<Orders> getByStatusAndOrderTimeLT(Integer pendingPayment, LocalDateTime time);
 
+    /**
+     * 根据动态条件统计营业额数据
+     * @param map
+     * @return
+     */
     Double sumByMap(Map map);
+
+    /**
+     * 根据动态条件统计订单数量
+     * @param map
+     * @return
+     */
+    Integer orderCountByMap(Map map);
+
+
+    /**
+     * 统计指定时间区间内的销量排名前10
+     * @param begin
+     * @param end
+     * @return
+     */
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin,LocalDateTime end);
+
 }
