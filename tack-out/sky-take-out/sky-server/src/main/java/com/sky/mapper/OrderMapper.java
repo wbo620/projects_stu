@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: hallen
@@ -86,4 +87,6 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status=#{pendingPayment} and order_time=#{time};")
     List<Orders> getByStatusAndOrderTimeLT(Integer pendingPayment, LocalDateTime time);
+
+    Double sumByMap(Map map);
 }
