@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
+import com.sky.vo.OrderOverViewVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -112,4 +113,10 @@ public interface OrderMapper {
      */
     List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin,LocalDateTime end);
 
+    /**
+     * 查询订单状态
+     * @return
+     */
+    @Select("select status from orders")
+    List<Integer> getStatus();
 }
