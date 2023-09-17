@@ -1,12 +1,13 @@
 package com.sky.service.impl;
 
+import com.sky.constant.StatusConstant;
 import com.sky.entity.Orders;
-import com.sky.mapper.OrderMapper;
-import com.sky.mapper.UserMapper;
-import com.sky.mapper.WorkspaceMapper;
+import com.sky.mapper.*;
 import com.sky.service.WorkspaceService;
 import com.sky.vo.BusinessDataVO;
+import com.sky.vo.DishOverViewVO;
 import com.sky.vo.OrderOverViewVO;
+import com.sky.vo.SetmealOverViewVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,11 +30,13 @@ import java.util.stream.Collectors;
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Resource
-    private WorkspaceMapper workspaceMapper;
-    @Resource
     private OrderMapper orderMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private SetmealMapper setmealMapper;
+    @Resource
+    private DishMapper dishMapper;
 
     /**
      * 查询今日数据
@@ -113,6 +116,44 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .deliveredOrders(deliveredOrders)
                 .allOrders(allOrders)
                 .waitingOrders(waitingOrders)
+                .build();
+    }
+
+    /**
+     * 查询菜品总览
+     *
+     * @return
+     */
+    public DishOverViewVO getDishOverView() {
+        Map map = new HashMap();
+        map.put("status", StatusConstant.ENABLE);
+        Integer sold = dishMapper.countByMap(map);
+
+        map.put("status", StatusConstant.DISABLE);
+        Integer discontinued = dishMapper.countByMap(map);
+
+        return DishOverViewVO.builder()
+                .sold(sold)
+                .discontinued(discontinued)
+                .build();
+    }
+
+    /**
+     * 查询套餐总览
+     *
+     * @return
+     */
+    public SetmealOverViewVO getSetmealOverView() {
+        Map map = new HashMap();
+        map.put("status", StatusConstant.ENABLE);
+        Integer sold = setmealMapper.countByMap(map);
+
+        map.put("status", StatusConstant.DISABLE);
+        Integer discontinued = setmealMapper.countByMap(map);
+
+        return SetmealOverViewVO.builder()
+                .sold(sold)
+                .discontinued(discontinued)
                 .build();
     }
 }

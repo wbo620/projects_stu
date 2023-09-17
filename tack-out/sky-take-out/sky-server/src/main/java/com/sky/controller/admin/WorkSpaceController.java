@@ -53,24 +53,24 @@ public class WorkSpaceController {
     public Result<OrderOverViewVO> orderOverView(){
         return Result.success(workspaceService.getOrderOverView());
     }
-    //
-    ///**
-    // * 查询菜品总览
-    // * @return
-    // */
-    //@GetMapping("/overviewDishes")
-    //@ApiOperation("查询菜品总览")
-    //public Result<DishOverViewVO> dishOverView(){
-    //    return Result.success(workspaceService.getDishOverView());
-    //}
-    //
-    ///**
-    // * 查询套餐总览
-    // * @return
-    // */
-    //@GetMapping("/overviewSetmeals")
-    //@ApiOperation("查询套餐总览")
-    //public Result<SetmealOverViewVO> setmealOverView(){
-    //    return Result.success(workspaceService.getSetmealOverView());
-    //}
+
+    /**
+     * 查询菜品总览
+     * @return
+     */
+    @GetMapping("/overviewDishes")
+    @ApiOperation("查询菜品总览")
+    public Result<DishOverViewVO> dishOverView(){
+        return Result.success(workspaceService.getDishOverView());
+    }
+
+    /**
+     * 查询套餐总览
+     * @return
+     */
+    @GetMapping("/overviewSetmeals")
+    @ApiOperation("查询套餐总览")
+    public Result<SetmealOverViewVO> setmealOverView(){
+        return Result.success(workspaceService.getSetmealOverView());
+    }
 }
