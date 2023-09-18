@@ -68,7 +68,6 @@ sky:
   #    notifyUrl: ${sky.wechat.notifyUrl}
   #    refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
   shop:
-    address: 北京市海淀区上地十街10号
+    address: 辽宁省大连市甘井子区柳树南街道
   baidu:
-    ak: your-ak
-
+    ak: XFkI05vCq1duWeqly6dDWkqvV1SIWW5S
