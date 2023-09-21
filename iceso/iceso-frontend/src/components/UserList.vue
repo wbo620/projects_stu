@@ -1,14 +1,26 @@
 <template>
   用户列表
   <div class="UserList">
-    <a-list item-layout="horizontal" :data-source="props.userList">
+    <a-list
+      item-layout="horizontal"
+      :grid="{
+        gutter: 16,
+        xs: 1,
+        sm: 2,
+        md: 4,
+        lg: 4,
+        xl: 6,
+        xxl: 3,
+      }"
+      :data-source="props.userList"
+    >
       <template #renderItem="{ item }">
-        <a-list class="card-wrapper">
-          <a-card hoverable style="width: 200px">
+        <a-list>
+          <a-card hoverable class="userBody">
             <template #cover>
               <img alt="example" :src="yaya" />
             </template>
-            <a-card-meta :title="item.userName">
+            <a-card-meta class="userText" :title="item.userName">
               <template #description>{{ item.userProfile }}</template>
             </a-card-meta>
           </a-card>
@@ -31,11 +43,10 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <style scoped>
-.card-wrapper {
-  width: 20%; /* 设置每个卡片的宽度为四分之一，以每行显示四个卡片 */
-  box-sizing: border-box; /* 防止边距和边框导致卡片换行 */
-  padding: 8px; /* 添加一些内边距，以控制卡片之间的间距 */
-  display: inline-block; /* 让卡片并排显示 */
-  margin: 20px;
+.userText {
+  height: 100px;
+}
+.userBody {
+  margin: 5px;
 }
 </style>
