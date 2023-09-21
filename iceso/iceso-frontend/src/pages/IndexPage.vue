@@ -11,9 +11,12 @@ import myAxios from "@/plugins/myAxios";
 const postlist = ref([]);
 const picturelist = ref([]);
 const userlist = ref([]);
-// //展示文章信息
-myAxios.post("/post/list/page/vo", {}).then((re: any) => {
+//展示文章信息
+myAxios.post("post/list/page/vo", {}).then((re: any) => {
   postlist.value = re.records;
+});
+myAxios.post("user/list/page/vo", {}).then((re: any) => {
+  userlist.value = re.records;
 });
 
 const router = useRouter();

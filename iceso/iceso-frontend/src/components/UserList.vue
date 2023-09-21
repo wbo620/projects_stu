@@ -3,23 +3,23 @@
   <div class="UserList">
     <a-list item-layout="horizontal" :data-source="props.userList">
       <template #renderItem="{ item }">
-        <a-list-item>
-          <a-list-item-meta :description="item.content">
-            <template #title>
-              <a href="https://www.antdv.com/">{{ item.title }}</a>
+        <a-list class="card-wrapper">
+          <a-card hoverable style="width: 200px">
+            <template #cover>
+              <img alt="example" :src="yaya" />
             </template>
-            <template #avatar>
-              <a-avatar :src="gege" />
-            </template>
-          </a-list-item-meta>
-        </a-list-item>
+            <a-card-meta :title="item.userName">
+              <template #description>{{ item.userProfile }}</template>
+            </a-card-meta>
+          </a-card>
+        </a-list>
       </template>
     </a-list>
   </div>
 </template>
 <script setup lang="ts">
-import gege from "../assets/yaya.jpg";
-import { defineComponent, defineProps, withDefaults } from "vue";
+import { defineProps, withDefaults } from "vue";
+import yaya from "../assets/yaya.jpg";
 
 interface Props {
   userList: any[];
@@ -28,13 +28,14 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   userList: () => [],
 });
-defineComponent({
-  name: "UserList",
-});
 </script>
 
 <style scoped>
-.gege {
-  width: 200px;
+.card-wrapper {
+  width: 20%; /* 设置每个卡片的宽度为四分之一，以每行显示四个卡片 */
+  box-sizing: border-box; /* 防止边距和边框导致卡片换行 */
+  padding: 8px; /* 添加一些内边距，以控制卡片之间的间距 */
+  display: inline-block; /* 让卡片并排显示 */
+  margin: 20px;
 }
 </style>
