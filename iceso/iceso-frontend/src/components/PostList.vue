@@ -33,8 +33,4 @@ const props = withDefaults(defineProps<Props>(), {
 });
 </script>
 
-<style scoped>
-.gege {
-  width: 200px;
-}
-</style>
+<style scoped></style>

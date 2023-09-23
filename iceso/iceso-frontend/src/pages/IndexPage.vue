@@ -87,9 +87,11 @@ watchEffect(() => {
 });
 // 搜索栏事件
 const onSearch = (value: string) => {
-  alert(value);
   router.push({
-    query: searchParams.value,
+    query: {
+      ...searchParams.value,
+      text: value,
+    },
   });
 };
 //列表页切换事件

@@ -1,39 +1,58 @@
 <style scoped>
-.yaya {
-  width: 100px;
+.Body {
+  margin: 5px;
+  height: 100%;
+}
+.Text {
+  text-align: center;
+}
+
+.row {
+  height: 300px;
+}
+
+.img {
+  height: 220px;
 }
 </style>
 <template>
-  图片列表<img :src="yaya" class="yaya" />
-  <a-list
-    item-layout="horizontal"
-    :grid="{
-      gutter: 16,
-      xs: 1,
-      sm: 2,
-      md: 4,
-      lg: 4,
-      xl: 6,
-      xxl: 3,
-    }"
-    :data-source="props.pictureList"
-  >
-    <template #renderItem="{ item }">
-      <a-list-item>
-        <a-list-item-meta description="">
-          <template #title>
-            <a href="https://www.antdv.com/">{{ item.title }}</a>
-          </template>
-          <template #avatar>
-            <a-avatar src="yaya" />
-          </template>
-        </a-list-item-meta>
-      </a-list-item>
-    </template>
-  </a-list>
+  <div class="PictureList">
+    <a-list
+      item-layout="horizontal"
+      :grid="{
+        gutter: 16,
+        xs: 1,
+        sm: 2,
+        md: 4,
+        lg: 4,
+        xl: 5,
+        xxl: 3,
+      }"
+      :data-source="props.pictureList"
+    >
+      <template #renderItem="{ item }">
+        <a-list>
+          <div class="row">
+            <a-card hoverable class="Body">
+              <template #cover>
+                <img :alt="item.title" :src="item.url" class="img" />
+              </template>
+              <a-card-meta class="Text">
+                <template #title>
+                  <a-tooltip :title="item.title">
+                    <span>{{ item.title }}</span>
+                  </a-tooltip>
+                </template>
+              </a-card-meta>
+            </a-card>
+          </div>
+        </a-list>
+      </template>
+    </a-list>
+  </div>
 </template>
+
 <script setup lang="ts">
-import yaya from "../assets/yaya.jpg";
 import { defineProps, withDefaults } from "vue";
 
 interface Props {
