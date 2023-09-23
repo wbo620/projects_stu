@@ -46,6 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
 .userText {
   height: 100px;
 }
+
 .userBody {
   margin: 5px;
 }

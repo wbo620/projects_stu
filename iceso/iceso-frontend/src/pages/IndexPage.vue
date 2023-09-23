@@ -23,7 +23,7 @@ myAxios.post("user/list/page/vo", {}).then((re: any) => {
  * 加载单类数据
  * @param params
  */
-const loadData = (params: any) => {
+const loadData1 = (params: any) => {
   const { type = "psost" } = params;
   if (!type) {
     message.error("类别为空");
@@ -47,17 +47,20 @@ const loadData = (params: any) => {
  * 加载聚合数据
  * @param params
  */
-const loadAllData = (params: any) => {
+const loadData = (params: any) => {
+  const { type = "psost" } = params;
+  if (!type) {
+    message.error("类别为空");
+    return;
+  }
   const query = {
     ...params,
     searchText: params.text,
   };
   myAxios.post("search/all", query).then((res: any) => {
-    postlist.value = res.dataList;
-
-    userlist.value = res.dataList;
-
-    picturelist.value = res.dataList;
+    postlist.value = res.postList;
+    userlist.value = res.userList;
+    picturelist.value = res.pictureList;
   });
 };
 
@@ -75,7 +78,8 @@ const initSearchParams = {
 };
 
 const searchParams = ref(initSearchParams);
-
+//首次请求加载页面
+//loadData(initSearchParams);
 // 地址栏参数与页面对应
 watchEffect(() => {
   searchParams.value = {
@@ -83,6 +87,7 @@ watchEffect(() => {
     text: route.query.text,
     type: route.params.category,
   } as any;
+  //点击搜索栏再加载页面
   loadData(searchParams.value);
 });
 // 搜索栏事件
@@ -93,6 +98,7 @@ const onSearch = (value: string) => {
       text: value,
     },
   });
+  loadData(searchParams.value);
 };
 //列表页切换事件
 const onTabChange = (key: string) => {
