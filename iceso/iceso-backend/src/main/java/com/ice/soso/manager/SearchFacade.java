@@ -14,6 +14,7 @@ import com.ice.soso.model.search.SearchRequest;
 import com.ice.soso.model.vo.PostVO;
 import com.ice.soso.model.vo.SearchVO;
 import com.ice.soso.model.vo.UserVO;
+import com.ice.soso.service.PictureService;
 import com.ice.soso.service.PostService;
 import com.ice.soso.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,8 @@ public class SearchFacade {
     private PostService postService;
     @Resource
     private UserService userService;
+    @Resource
+    private PictureService pictureService;
 
     public SearchVO searchAll(SearchRequest searchRequest, HttpServletRequest request) throws IOException {
         //获取搜索数据的类型
@@ -68,6 +71,7 @@ public class SearchFacade {
         userQueryRequest.setUserName(searchText);
         userQueryRequest.setCurrent(1);
         userQueryRequest.setPageSize(10);
+
 
         Page<Post> postPage = postService.page(new Page<>(current, size),
                 postService.getQueryWrapper(postQueryRequest));
@@ -121,6 +125,7 @@ public class SearchFacade {
             picture.setUrl(murl);
             pictureList.add(picture);
         }
+        //pictureService.searchPicture(searchText,current,size);
         SearchVO searchVO = new SearchVO();
 
         searchVO.setPostList(postVOPage.getRecords());

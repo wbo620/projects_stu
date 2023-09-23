@@ -4,15 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ice.soso.model.dto.post.PostQueryRequest;
+import com.ice.soso.model.search.SearchRequest;
 import com.ice.soso.model.vo.PostVO;
 import com.ice.soso.model.entity.Post;
+import com.ice.soso.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * 帖子服务
- *
-  *
  */
 public interface PostService extends IService<Post> {
 
@@ -57,4 +57,12 @@ public interface PostService extends IService<Post> {
      * @return
      */
     Page<PostVO> getPostVOPage(Page<Post> postPage, HttpServletRequest request);
+
+    /**
+     * 分页查询帖子
+     * @param postQueryRequest
+     * @param request
+     * @return
+     */
+    Page<PostVO> listPostVOByPage(PostQueryRequest postQueryRequest, HttpServletRequest request);
 }

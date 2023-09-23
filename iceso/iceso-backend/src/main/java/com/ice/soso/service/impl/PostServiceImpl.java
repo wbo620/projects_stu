@@ -9,6 +9,7 @@ import com.ice.soso.exception.BusinessException;
 import com.ice.soso.exception.ThrowUtils;
 import com.ice.soso.model.dto.post.PostEsDTO;
 import com.ice.soso.model.dto.post.PostQueryRequest;
+import com.ice.soso.model.search.SearchRequest;
 import com.ice.soso.model.vo.PostVO;
 import com.ice.soso.model.vo.UserVO;
 import com.ice.soso.service.PostService;
@@ -22,6 +23,7 @@ import com.ice.soso.model.entity.PostFavour;
 import com.ice.soso.model.entity.PostThumb;
 import com.ice.soso.model.entity.User;
 import com.ice.soso.utils.SqlUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -49,8 +52,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * 帖子服务实现
- *
-  *
  */
 @Service
 @Slf4j
@@ -307,6 +308,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         postVOPage.setRecords(postVOList);
         return postVOPage;
     }
+
+    @Override
+    public Page<PostVO> listPostVOByPage(PostQueryRequest postQueryRequest, HttpServletRequest request) {
+        long pageSize = postQueryRequest.getPageSize();
+        long current = postQueryRequest.getCurrent();
+        Page<Post> postPage = this.page(new Page<>(current, pageSize),
+                this.getQueryWrapper(postQueryRequest));
+        return this.getPostVOPage(postPage, request);
+    }
+
 
 }
 
