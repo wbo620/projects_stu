@@ -1,10 +1,14 @@
 package com.ice.soso.service;
 
-/**
- * User: hallen
- * Date: 2023/9/22
- * Time: 16:29
- */
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ice.soso.model.entity.Picture;
 
+
+/**
+ * 图片服务
+ *
+ */
 public interface PictureService {
+
+    Page<Picture> searchPicture(String searchText, long pageNum, long pageSize);
 }

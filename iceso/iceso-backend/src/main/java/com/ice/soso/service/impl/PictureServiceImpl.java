@@ -1,5 +1,7 @@
 package com.ice.soso.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ice.soso.model.entity.Picture;
 import com.ice.soso.service.PictureService;
 import org.springframework.stereotype.Service;
 
@@ -10,4 +12,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PictureServiceImpl implements PictureService {
+    @Override
+    public Page<Picture> searchPicture(String searchText, long pageNum, long pageSize) {
+        return null;
+    }
 }

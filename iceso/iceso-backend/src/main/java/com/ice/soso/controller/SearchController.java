@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * 帖子接口
@@ -35,7 +36,7 @@ public class SearchController {
     private SearchFacade searchFacade;
 
     @PostMapping("/all")
-    public BaseResponse<SearchVO> searchAll(@RequestBody SearchRequest searchRequest, HttpServletRequest request) {
+    public BaseResponse<SearchVO> searchAll(@RequestBody SearchRequest searchRequest, HttpServletRequest request) throws IOException {
         return ResultUtils.success(searchFacade.searchAll(searchRequest, request));
     }
 

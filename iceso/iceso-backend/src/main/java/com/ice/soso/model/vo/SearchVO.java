@@ -1,7 +1,8 @@
 package com.ice.soso.model.vo;
 
+import com.ice.soso.model.entity.Picture;
 import lombok.Data;
-import org.apache.poi.ss.usermodel.Picture;
+
 
 import java.io.Serializable;
 import java.util.List;
