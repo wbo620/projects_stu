@@ -23,8 +23,8 @@ myAxios.post("user/list/page/vo", {}).then((re: any) => {
  * 加载单类数据
  * @param params
  */
-const loadData1 = (params: any) => {
-  const { type = "psost" } = params;
+const loadData = (params: any) => {
+  const { type = "post" } = params;
   if (!type) {
     message.error("类别为空");
     return;
@@ -47,8 +47,8 @@ const loadData1 = (params: any) => {
  * 加载聚合数据
  * @param params
  */
-const loadData = (params: any) => {
-  const { type = "psost" } = params;
+const loadAllData = (params: any) => {
+  const { type = "post" } = params;
   if (!type) {
     message.error("类别为空");
     return;
@@ -76,11 +76,12 @@ const initSearchParams = {
   pageSize: 10,
   pageNum: 1,
 };
-
+//初始化查找参数
 const searchParams = ref(initSearchParams);
-//首次请求加载页面
-//loadData(initSearchParams);
+// //首次请求加载页面
+// loadAllData(initSearchParams);
 // 地址栏参数与页面对应
+//作用：当地址改变，重新加载页面
 watchEffect(() => {
   searchParams.value = {
     ...initSearchParams,
@@ -90,7 +91,7 @@ watchEffect(() => {
   //点击搜索栏再加载页面
   loadData(searchParams.value);
 });
-// 搜索栏事件
+// 搜索栏事件：点击搜索，触发事件
 const onSearch = (value: string) => {
   router.push({
     query: {
@@ -100,7 +101,7 @@ const onSearch = (value: string) => {
   });
   loadData(searchParams.value);
 };
-//列表页切换事件
+//列表页切换事件：地址参数改变
 const onTabChange = (key: string) => {
   router.push({
     path: `/${key}`,
