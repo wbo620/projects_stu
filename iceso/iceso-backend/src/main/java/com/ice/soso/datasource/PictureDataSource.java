@@ -1,9 +1,10 @@
-package com.ice.soso.service.impl;
+package com.ice.soso.datasource;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ice.soso.common.ErrorCode;
+import com.ice.soso.exception.BusinessException;
 import com.ice.soso.model.entity.Picture;
-import com.ice.soso.service.PictureService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,43 +18,47 @@ import java.util.Map;
 
 /**
  * User: hallen
- * Date: 2023/9/23
- * Time: 17:13
+ * Date: 2023/9/25
+ * Time: 10:01
  */
 
 /**
- * 图片服务实现类
+ * 图片数据源接口
  */
 @Service
-public class PictureServiceImpl implements PictureService {
+public class PictureDataSource implements DataSource<Picture> {
+
     @Override
-    public Page<Picture> searchPicture(String searchText, long pageNum, long pageSize) throws IOException {
+    public Page<Picture> doSearch(String searchText, long pageNum, long pageSize) {
         long current = (pageNum - 1) * pageSize;
         String url = String.format("https://cn.bing.com/images/search?q=%s&first=%s", searchText, current);
-        Document doc = Jsoup.connect(url).get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(url).get();
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据获取异常");
+        }
         Elements elements = doc.select(".iuscp.isv");
-        List<Picture> pictureList = new ArrayList<>();
+        List<Picture> pictures = new ArrayList<>();
         for (Element element : elements) {
-
+            // 取图片地址（murl）
             String m = element.select(".iusc").get(0).attr("m");
-
             Map<String, Object> map = JSONUtil.toBean(m, Map.class);
-            //取图片地址
             String murl = (String) map.get("murl");
-            //取标题
+//            System.out.println(murl);
+            // 取标题
             String title = element.select(".inflnk").get(0).attr("aria-label");
-
+//            System.out.println(title);
             Picture picture = new Picture();
             picture.setTitle(title);
             picture.setUrl(murl);
-            pictureList.add(picture);
-
-            if (pictureList.size() >= pageSize) {
+            pictures.add(picture);
+            if (pictures.size() >= pageSize) {
                 break;
             }
         }
         Page<Picture> picturePage = new Page<>(pageNum, pageSize);
-        picturePage.setRecords(pictureList);
+        picturePage.setRecords(pictures);
         return picturePage;
     }
 }
