@@ -1,6 +1,7 @@
 package com.ice.soso.model.vo;
 
 import com.ice.soso.model.entity.Picture;
+import com.ice.soso.model.entity.Video;
 import lombok.Data;
 
 
@@ -25,6 +26,7 @@ public class SearchVO implements Serializable {
     private List<PostVO> postList;
 
     private List<Picture> pictureList;
+    private List<Video> videoList;
 
     private List<?> dataList;
 

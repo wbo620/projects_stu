@@ -9,6 +9,7 @@ import com.ice.soso.exception.ThrowUtils;
 import com.ice.soso.model.dto.post.PostQueryRequest;
 import com.ice.soso.model.dto.user.UserQueryRequest;
 import com.ice.soso.model.entity.Picture;
+import com.ice.soso.model.entity.Video;
 import com.ice.soso.model.enums.SearchTypeEnum;
 import com.ice.soso.model.search.SearchRequest;
 import com.ice.soso.model.vo.PostVO;
@@ -17,6 +18,7 @@ import com.ice.soso.model.vo.UserVO;
 import com.ice.soso.service.PictureService;
 import com.ice.soso.service.PostService;
 import com.ice.soso.service.UserService;
+import com.ice.soso.service.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,6 +49,9 @@ public class SearchFacade {
     private UserService userService;
     @Resource
     private PictureService pictureService;
+
+    @Resource
+    private VideoService videoService;
     @Resource
     private DataSourceRegistry dataSourceRegistry;
 
@@ -84,17 +89,28 @@ public class SearchFacade {
                 }
                 return picturePage;
             });
+            CompletableFuture<Page<Video>> videoTask = CompletableFuture.supplyAsync(() -> {
+                Page<Video> videoPage = null;
+                try {
+                    videoPage = videoService.searchVideo(searchText, 1, 10);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return videoPage;
+            });
 
             //三个线程全部结束才进行下面的操作
-            CompletableFuture.allOf(postTask, userTask, pictureTask).join();
+            CompletableFuture.allOf(postTask, userTask, pictureTask,videoTask).join();
             try {
                 Page<PostVO> postVOPage = postTask.get();
                 Page<UserVO> userVOPage = userTask.get();
                 Page<Picture> picturePage = pictureTask.get();
+                Page<Video> videoPage = videoTask.get();
                 SearchVO searchVO = new SearchVO();
                 searchVO.setPostList(postVOPage.getRecords());
                 searchVO.setUserList(userVOPage.getRecords());
                 searchVO.setPictureList(picturePage.getRecords());
+                searchVO.setVideoList(videoPage.getRecords());
 
                 return searchVO;
             } catch (Exception e) {
