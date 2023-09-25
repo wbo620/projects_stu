@@ -3,6 +3,7 @@
   margin: 5px;
   height: 100%;
 }
+
 .Text {
   text-align: center;
 }
