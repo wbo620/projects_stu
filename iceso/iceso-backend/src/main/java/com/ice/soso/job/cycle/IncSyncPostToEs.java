@@ -4,21 +4,22 @@ import com.ice.soso.esdao.PostEsDao;
 import com.ice.soso.model.dto.post.PostEsDTO;
 import com.ice.soso.mapper.PostMapper;
 import com.ice.soso.model.entity.Post;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 /**
  * 增量同步帖子到 es
- *
-  *
  */
-// todo 取消注释开启任务
-//@Component
+ //todo 取消注释开启任务
+@Component
 @Slf4j
 public class IncSyncPostToEs {
 
@@ -34,7 +35,7 @@ public class IncSyncPostToEs {
     @Scheduled(fixedRate = 60 * 1000)
     public void run() {
         // 查询近 5 分钟内的数据
-        Date fiveMinutesAgoDate = new Date(new Date().getTime() - 5 * 60 * 1000L);
+        Date fiveMinutesAgoDate = new Date(System.currentTimeMillis() - 5 * 60 * 1000L);
         List<Post> postList = postMapper.listPostWithDelete(fiveMinutesAgoDate);
         if (CollectionUtils.isEmpty(postList)) {
             log.info("no inc post");

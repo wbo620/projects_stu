@@ -2,6 +2,7 @@ package com.ice.soso.datasource;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ice.soso.model.dto.post.PostQueryRequest;
+import com.ice.soso.model.entity.Post;
 import com.ice.soso.model.vo.PostVO;
 import com.ice.soso.service.PostService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class PostDataSource implements DataSource<PostVO> {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
 
-        return postService.listPostVOByPage(postQueryRequest,request);
+        Page<Post> postPage = postService.searchFromEs(postQueryRequest);
+        return postService.getPostVOPage(postPage,request);
     }
 }
