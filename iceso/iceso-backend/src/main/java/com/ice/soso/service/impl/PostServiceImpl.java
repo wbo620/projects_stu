@@ -24,11 +24,8 @@ import com.ice.soso.model.entity.PostThumb;
 import com.ice.soso.model.entity.User;
 import com.ice.soso.utils.SqlUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -37,11 +34,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.suggest.document.ContextSuggestField;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.SuggestionBuilder;
+import org.elasticsearch.search.suggest.term.TermSuggestion;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -178,7 +186,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 按关键词检索
         if (StringUtils.isNotBlank(searchText)) {
             boolQueryBuilder.should(QueryBuilders.matchQuery("title", searchText));
-            boolQueryBuilder.should(QueryBuilders.matchQuery("description", searchText));
             boolQueryBuilder.should(QueryBuilders.matchQuery("content", searchText));
             boolQueryBuilder.minimumShouldMatch(1);
         }
@@ -200,18 +207,28 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         // 分页
         PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.field("title"); // 高亮标题字段
+        highlightBuilder.field("content"); // 高亮内容字段
+        highlightBuilder.preTags("<h1>"); // 高亮起始标签
+        highlightBuilder.postTags("</h1>"); // 高亮结束标签
         // 构造查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
-                .withPageable(pageRequest).withSorts(sortBuilder).build();
+                .withPageable(pageRequest).withSorts(sortBuilder).withHighlightBuilder(highlightBuilder).build();
         SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
         Page<Post> page = new Page<>();
         page.setTotal(searchHits.getTotalHits());
         List<Post> resourceList = new ArrayList<>();
+
+
+
         // 查出结果后，从 db 获取最新动态数据（比如点赞数）
         if (searchHits.hasSearchHits()) {
             List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
+
             List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
                     .collect(Collectors.toList());
+            // 从数据库中取出更完整的数据
             List<Post> postList = baseMapper.selectBatchIds(postIdList);
             if (postList != null) {
                 Map<Long, List<Post>> idPostMap = postList.stream().collect(Collectors.groupingBy(Post::getId));
@@ -229,6 +246,39 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         page.setRecords(resourceList);
         return page;
     }
+
+    /**
+     * 生成搜索建议
+     *
+     * @param
+     * @return
+     */
+    public List<String> getSuggestions(String searchText) {
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        SuggestionBuilder termSuggestionBuilder = SuggestBuilders.termSuggestion("suggestion")
+                .text(searchText)
+                .size(5); // 调整要检索的建议数量
+
+        suggestBuilder.addSuggestion("title-suggest", termSuggestionBuilder);
+
+
+        org.elasticsearch.action.search.SearchRequest request = new org.elasticsearch.action.search.SearchRequest();
+        request.source().suggest(suggestBuilder);
+
+        SearchResponse searchResponse = elasticsearchRestTemplate.suggest(suggestBuilder, PostEsDTO.class);
+
+        List<String> suggestions = new ArrayList<>();
+        TermSuggestion termSuggestion = searchResponse.getSuggest().getSuggestion("title-suggest");
+        if (termSuggestion != null) {
+            for (TermSuggestion.Entry entry : termSuggestion.getEntries()) {
+                for (TermSuggestion.Entry.Option option : entry.getOptions()) {
+                    suggestions.add(option.getText().string());
+                }
+            }
+        }
+        return suggestions;
+    }
+
 
     @Override
     public PostVO getPostVO(Post post, HttpServletRequest request) {
