@@ -212,6 +212,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         highlightBuilder.field("content"); // 高亮内容字段
         highlightBuilder.preTags("<h1>"); // 高亮起始标签
         highlightBuilder.postTags("</h1>"); // 高亮结束标签
+
         // 构造查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageRequest).withSorts(sortBuilder).withHighlightBuilder(highlightBuilder).build();
