@@ -9,7 +9,6 @@ import com.ice.soso.exception.BusinessException;
 import com.ice.soso.exception.ThrowUtils;
 import com.ice.soso.model.dto.post.PostEsDTO;
 import com.ice.soso.model.dto.post.PostQueryRequest;
-import com.ice.soso.model.search.SearchRequest;
 import com.ice.soso.model.vo.PostVO;
 import com.ice.soso.model.vo.UserVO;
 import com.ice.soso.service.PostService;
@@ -34,28 +33,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.search.suggest.document.ContextSuggestField;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.SuggestionBuilder;
 import org.elasticsearch.search.suggest.term.TermSuggestion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
 import org.springframework.stereotype.Service;
 
 /**
@@ -207,12 +204,17 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         // 分页
         PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
-        HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.field("title"); // 高亮标题字段
-        highlightBuilder.field("content"); // 高亮内容字段
-        highlightBuilder.preTags("<h1>"); // 高亮起始标签
-        highlightBuilder.postTags("</h1>"); // 高亮结束标签
+        //HighlightBuilder highlightBuilder = new HighlightBuilder();
+        //highlightBuilder.field("title"); // 高亮标题字段
+        //highlightBuilder.field("content"); // 高亮内容字段
+        //highlightBuilder.preTags("<h1>"); // 高亮起始标签
+        //highlightBuilder.postTags("</h1>"); // 高亮结束标签
 
+        HighlightBuilder.Field highlightField = new HighlightBuilder.Field("fieldName");
+        highlightField.preTags("<span style='background-color: yellow'>");
+        highlightField.postTags("</span>");
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.field(highlightField);
         // 构造查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageRequest).withSorts(sortBuilder).withHighlightBuilder(highlightBuilder).build();
@@ -220,7 +222,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         Page<Post> page = new Page<>();
         page.setTotal(searchHits.getTotalHits());
         List<Post> resourceList = new ArrayList<>();
-
 
 
         // 查出结果后，从 db 获取最新动态数据（比如点赞数）
