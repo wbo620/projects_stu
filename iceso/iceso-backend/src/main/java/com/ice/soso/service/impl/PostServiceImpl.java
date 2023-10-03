@@ -9,6 +9,7 @@ import com.ice.soso.exception.BusinessException;
 import com.ice.soso.exception.ThrowUtils;
 import com.ice.soso.model.dto.post.PostEsDTO;
 import com.ice.soso.model.dto.post.PostQueryRequest;
+import com.ice.soso.model.vo.PostEsHighlightVO;
 import com.ice.soso.model.vo.PostVO;
 import com.ice.soso.model.vo.UserVO;
 import com.ice.soso.service.PostService;
@@ -45,13 +46,13 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.SuggestionBuilder;
 import org.elasticsearch.search.suggest.term.TermSuggestion;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.annotations.Highlight;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
 import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
 import org.springframework.stereotype.Service;
 
@@ -140,6 +141,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Override
     public Page<Post> searchFromEs(PostQueryRequest postQueryRequest) {
+        // 获取查询数据
         Long id = postQueryRequest.getId();
         Long notId = postQueryRequest.getNotId();
         String searchText = postQueryRequest.getSearchText();
@@ -180,7 +182,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             orTagBoolQueryBuilder.minimumShouldMatch(1);
             boolQueryBuilder.filter(orTagBoolQueryBuilder);
         }
-        // 按关键词检索
+        // 按关键词检索 满足其一√
         if (StringUtils.isNotBlank(searchText)) {
             boolQueryBuilder.should(QueryBuilders.matchQuery("title", searchText));
             boolQueryBuilder.should(QueryBuilders.matchQuery("content", searchText));
@@ -196,6 +198,13 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             boolQueryBuilder.should(QueryBuilders.matchQuery("content", content));
             boolQueryBuilder.minimumShouldMatch(1);
         }
+        //搜索关键词高亮
+        // 搜索关键词高亮
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.field("*").preTags("<font color='#CC0100'>")
+                .postTags("</font>"); //所有的字段都高亮
+        highlightBuilder.requireFieldMatch(false);//如果要多个字段高亮,这项要为false
+
         // 排序
         SortBuilder<?> sortBuilder = SortBuilders.scoreSort();
         if (StringUtils.isNotBlank(sortField)) {
@@ -204,17 +213,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         // 分页
         PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
-        //HighlightBuilder highlightBuilder = new HighlightBuilder();
-        //highlightBuilder.field("title"); // 高亮标题字段
-        //highlightBuilder.field("content"); // 高亮内容字段
-        //highlightBuilder.preTags("<h1>"); // 高亮起始标签
-        //highlightBuilder.postTags("</h1>"); // 高亮结束标签
 
-        HighlightBuilder.Field highlightField = new HighlightBuilder.Field("fieldName");
-        highlightField.preTags("<span style='background-color: yellow'>");
-        highlightField.postTags("</span>");
-        HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.field(highlightField);
         // 构造查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageRequest).withSorts(sortBuilder).withHighlightBuilder(highlightBuilder).build();
@@ -227,16 +226,43 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 查出结果后，从 db 获取最新动态数据（比如点赞数）
         if (searchHits.hasSearchHits()) {
             List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
-
+            // 搜索关键词高亮
+            Map<Long, PostEsHighlightVO> highlightDataMap = new HashMap<>();
+            for (SearchHit hit: searchHits.getSearchHits()) {
+                PostEsHighlightVO data = new PostEsHighlightVO();
+                data.setId(Long.valueOf(hit.getId()));
+                if (hit.getHighlightFields().get("title") != null){
+                    String highlightTitle = String.valueOf(hit.getHighlightFields().get("title"));
+                    data.setTitle(highlightTitle.substring(1,highlightTitle.length()-1));
+                    //System.out.println(data.getTitle());
+                }
+                if (hit.getHighlightFields().get("content") != null){
+                    String highlightContent = String.valueOf(hit.getHighlightFields().get("content"));
+                    data.setContent(highlightContent.substring(1,highlightContent.length()-1));
+                    //System.out.println(data.getContent());
+                }
+                highlightDataMap.put(data.getId(),data);
+            }
+            // id列表
             List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
                     .collect(Collectors.toList());
-            // 从数据库中取出更完整的数据
+            // 根据id查找数据集
             List<Post> postList = baseMapper.selectBatchIds(postIdList);
             if (postList != null) {
                 Map<Long, List<Post>> idPostMap = postList.stream().collect(Collectors.groupingBy(Post::getId));
                 postIdList.forEach(postId -> {
                     if (idPostMap.containsKey(postId)) {
-                        resourceList.add(idPostMap.get(postId).get(0));
+                        // 搜索关键词高亮替换
+                        Post post = idPostMap.get(postId).get(0);
+                        String hl_title = highlightDataMap.get(postId).getTitle();
+                        String hl_content = highlightDataMap.get(postId).getContent();
+                        if( hl_title != null && hl_title.trim() != ""){
+                            post.setTitle(hl_title);
+                        }
+                        if (hl_content != null && hl_content.trim() != ""){
+                            post.setContent(hl_content);
+                        }
+                        resourceList.add(post);
                     } else {
                         // 从 es 清空 db 已物理删除的数据
                         String delete = elasticsearchRestTemplate.delete(String.valueOf(postId), PostEsDTO.class);
@@ -248,7 +274,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         page.setRecords(resourceList);
         return page;
     }
-
     /**
      * 生成搜索建议
      *
