@@ -44,6 +44,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.SuggestionBuilder;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.elasticsearch.search.suggest.term.TermSuggestion;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.annotations.Highlight;
@@ -205,6 +206,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
                 .postTags("</font>"); //所有的字段都高亮
         highlightBuilder.requireFieldMatch(false);//如果要多个字段高亮,这项要为false
 
+        ////查询建议
+        //SuggestBuilder suggestBuilder = new SuggestBuilder()
+        //        .addSuggestion("suggestionTitle", new CompletionSuggestionBuilder("suggestion").skipDuplicates(true).size(5).prefix("keyword"));
+
+
         // 排序
         SortBuilder<?> sortBuilder = SortBuilders.scoreSort();
         if (StringUtils.isNotBlank(sortField)) {
@@ -216,7 +222,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
         // 构造查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
-                .withPageable(pageRequest).withSorts(sortBuilder).withHighlightBuilder(highlightBuilder).build();
+                .withPageable(pageRequest).withSorts(sortBuilder)
+                .withHighlightBuilder(highlightBuilder)
+                .build();
         SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
         Page<Post> page = new Page<>();
         page.setTotal(searchHits.getTotalHits());
@@ -280,31 +288,31 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      * @param
      * @return
      */
-    public List<String> getSuggestions(String searchText) {
-        SuggestBuilder suggestBuilder = new SuggestBuilder();
-        SuggestionBuilder termSuggestionBuilder = SuggestBuilders.termSuggestion("suggestion")
-                .text(searchText)
-                .size(5); // 调整要检索的建议数量
-
-        suggestBuilder.addSuggestion("title-suggest", termSuggestionBuilder);
-
-
-        org.elasticsearch.action.search.SearchRequest request = new org.elasticsearch.action.search.SearchRequest();
-        request.source().suggest(suggestBuilder);
-
-        SearchResponse searchResponse = elasticsearchRestTemplate.suggest(suggestBuilder, PostEsDTO.class);
-
-        List<String> suggestions = new ArrayList<>();
-        TermSuggestion termSuggestion = searchResponse.getSuggest().getSuggestion("title-suggest");
-        if (termSuggestion != null) {
-            for (TermSuggestion.Entry entry : termSuggestion.getEntries()) {
-                for (TermSuggestion.Entry.Option option : entry.getOptions()) {
-                    suggestions.add(option.getText().string());
-                }
-            }
-        }
-        return suggestions;
-    }
+    //public List<String> getSuggestions(String searchText) {
+    //    SuggestBuilder suggestBuilder = new SuggestBuilder();
+    //    SuggestionBuilder termSuggestionBuilder = SuggestBuilders.termSuggestion(suggestion)
+    //            .text(searchText)
+    //            .size(5); // 调整要检索的建议数量
+    //
+    //    suggestBuilder.addSuggestion("title-suggest", termSuggestionBuilder);
+    //
+    //
+    //    org.elasticsearch.action.search.SearchRequest request = new org.elasticsearch.action.search.SearchRequest();
+    //    request.source().suggest(suggestBuilder);
+    //
+    //    SearchResponse searchResponse = elasticsearchRestTemplate.suggest(suggestBuilder, PostEsDTO.class);
+    //
+    //    List<String> suggestions = new ArrayList<>();
+    //    TermSuggestion termSuggestion = searchResponse.getSuggest().getSuggestion("title-suggest");
+    //    if (termSuggestion != null) {
+    //        for (TermSuggestion.Entry entry : termSuggestion.getEntries()) {
+    //            for (TermSuggestion.Entry.Option option : entry.getOptions()) {
+    //                suggestions.add(option.getText().string());
+    //            }
+    //        }
+    //    }
+    //    return suggestions;
+    //}
 
 
     @Override

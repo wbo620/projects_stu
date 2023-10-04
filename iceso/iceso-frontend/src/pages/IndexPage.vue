@@ -1,12 +1,24 @@
 <template>
   <div class="index-page">
-    <a-input-search
-      v-model:value="searchText"
-      placeholder="请输入搜索关键词"
-      enter-button="搜索"
-      size="large"
-      @search="onSearch"
-    />
+    <!-- 搜索建议，选中之后自动搜索 -->
+    <div>
+      <a-auto-complete
+        v-model:value="searchText"
+        :options="options"
+        placeholder="请输入搜索关键词"
+        @select="onSearch"
+        size="large"
+        style="width: 90%"
+        @search="getSearchPrompt"
+      />
+      <!-- 点击搜索，对应不选建议，直接点击搜索事件 -->
+      <a-button
+        type="primary"
+        style="font-size: 16px; height: 40px; width: 10%"
+        @click="onSearch(searchText)"
+        >搜索
+      </a-button>
+    </div>
     <MyDivider />
     <a-tabs v-model:activeKey="activeKey" @change="onTabChange">
       <a-tab-pane key="post" tab="文章">
@@ -25,7 +37,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
+import { ref, watch, watchEffect } from "vue";
 
 import PictureList from "@/components/PictureList.vue";
 import MyDivider from "@/components/MyDivider.vue";
@@ -40,6 +52,7 @@ const postlist = ref([]);
 const picturelist = ref([]);
 const userlist = ref([]);
 const videolist = ref([]);
+const options = ref<any>([]);
 
 const router = useRouter();
 const route = useRoute();
@@ -61,6 +74,7 @@ myAxios.post("post/list/page/vo", {}).then((re: any) => {
 myAxios.post("user/list/page/vo", {}).then((re: any) => {
   userlist.value = re.records;
 });*/
+// 在tab为post时，监听搜索内容，开启搜索建议
 
 /**
  * 加载聚合数据
@@ -125,8 +139,32 @@ watchEffect(() => {
   //点击搜索栏再加载页面
   loadData(searchParams.value);
 });
+
+// // 搜索建议
+// watch(
+//   () => searchParams.value.text,
+//   (newValue) => {
+//     if (activeKey === "post") {
+//       // 启用监听
+//       myAxios
+//         .get("/suggest/post?pre=" + searchParams.value.text)
+//         .then((res: any) => {
+//           //console.log(res);
+//           // 清空之前的options
+//           options.value = [];
+//           res.forEach((item: string) => {
+//             options.value.push({ value: item });
+//           });
+//         });
+//       console.log("监听已启动");
+//     } else {
+//       // 停止监听
+//       console.log("监听已停止");
+//     }
+//   }
+// );
 // 搜索栏事件：点击搜索，触发事件
-const onSearch = (value: string) => {
+const onSearch = (value: any) => {
   router.push({
     query: {
       ...searchParams.value,
@@ -135,6 +173,22 @@ const onSearch = (value: string) => {
   });
   //loadData(searchParams.value);
 };
+
+// const getSearchPrompt = (value: string) => {
+//   options.value = [];
+//   console.log(value);
+//   if (value) {
+//     myAxios.get("search/getSearchPrompt?keyword=" + value).then((res: any) => {
+//       for (let i = 0; i < res.length; i++) {
+//         const tempMap = {
+//           value: res[i],
+//           color: "red",
+//         };
+//         options.value.push(tempMap);
+//       }
+//     });
+//   }
+// };
 //列表页切换事件：地址参数改变
 const onTabChange = (key: string) => {
   router.push({
