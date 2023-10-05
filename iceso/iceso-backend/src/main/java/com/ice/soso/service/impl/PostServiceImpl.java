@@ -206,10 +206,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
                 .postTags("</font>"); //所有的字段都高亮
         highlightBuilder.requireFieldMatch(false);//如果要多个字段高亮,这项要为false
 
-        ////查询建议
-        //SuggestBuilder suggestBuilder = new SuggestBuilder()
-        //        .addSuggestion("suggestionTitle", new CompletionSuggestionBuilder("suggestion").skipDuplicates(true).size(5).prefix("keyword"));
-
+        //查询建议
+        SuggestBuilder suggestBuilder = new SuggestBuilder()
+                .addSuggestion("suggestionTitle", new CompletionSuggestionBuilder("suggestion").skipDuplicates(true).size(5).prefix("keyword"));
 
         // 排序
         SortBuilder<?> sortBuilder = SortBuilders.scoreSort();
@@ -223,6 +222,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 构造查询
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageRequest).withSorts(sortBuilder)
+                .withSuggestBuilder(suggestBuilder)
                 .withHighlightBuilder(highlightBuilder)
                 .build();
         SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
@@ -282,19 +282,21 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         page.setRecords(resourceList);
         return page;
     }
-    /**
-     * 生成搜索建议
-     *
-     * @param
-     * @return
-     */
-    //public List<String> getSuggestions(String searchText) {
-    //    SuggestBuilder suggestBuilder = new SuggestBuilder();
-    //    SuggestionBuilder termSuggestionBuilder = SuggestBuilders.termSuggestion(suggestion)
-    //            .text(searchText)
-    //            .size(5); // 调整要检索的建议数量
+    ///**
+    // * 生成搜索建议
+    // *
+    // * @param
+    // * @return
+    // */
+    //public List<String> getSuggestions(String keyword) {
+    //    SuggestBuilder suggestBuilder = new SuggestBuilder()
+    //            .addSuggestion("suggestionTitle", new CompletionSuggestionBuilder("suggestion").skipDuplicates(true).size(5).prefix(keyword));
+    //    NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+    //            .withSuggestBuilder(suggestBuilder).build();
     //
-    //    suggestBuilder.addSuggestion("title-suggest", termSuggestionBuilder);
+    //    HashSet<Temp> temps = new HashSet<>();
+    //    SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
+    //
     //
     //
     //    org.elasticsearch.action.search.SearchRequest request = new org.elasticsearch.action.search.SearchRequest();

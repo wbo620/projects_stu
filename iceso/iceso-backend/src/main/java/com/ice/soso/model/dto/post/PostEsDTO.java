@@ -3,12 +3,18 @@ package com.ice.soso.model.dto.post;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.ice.soso.model.entity.Post;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
+import org.elasticsearch.search.suggest.Suggest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -17,15 +23,15 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * 帖子 ES 包装类
- *
-  *
  **/
 // todo 取消注释开启 ES（须先配置 ES）
 @Document(indexName = "post")
 @Data
+
 public class PostEsDTO implements Serializable {
 
     private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
 
     /**
      * id
@@ -62,6 +68,9 @@ public class PostEsDTO implements Serializable {
      * 创建用户 id
      */
     private Long userId;
+
+
+    private List<String> suggestion;
 
     /**
      * 创建时间
@@ -100,6 +109,8 @@ public class PostEsDTO implements Serializable {
         if (StringUtils.isNotBlank(tagsStr)) {
             postEsDTO.setTags(GSON.fromJson(tagsStr, new TypeToken<List<String>>() {
             }.getType()));
+            // Set the 'title' field in 'suggestion'
+            // Set title as a suggestion
         }
         return postEsDTO;
     }
