@@ -7,9 +7,11 @@ package com.ice.soso.controller;
  */
 
 
+import co.elastic.clients.elasticsearch.core.search.Suggestion;
 import com.ice.soso.common.BaseResponse;
 import com.ice.soso.common.ResultUtils;
 import com.ice.soso.model.dto.post.PostEsDTO;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,30 @@ public class SuggestController {
     @Resource
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
 
+    //@GetMapping("/search/getSearchPrompt")
+    //public BaseResponse<List<String>> getSearchPrompt(@RequestParam String keyword) {
+    //    SuggestBuilder suggestBuilder = new SuggestBuilder()
+    //            .addSuggestion("suggestionTitle", new CompletionSuggestionBuilder("suggestion")
+    //                    .skipDuplicates(true)
+    //                    .size(5)
+    //                    .prefix(keyword));
+    //
+    //    NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+    //            .withSuggestBuilder(suggestBuilder)
+    //            .build();
+    //
+    //    SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
+    //
+    //    SearchResponse suggest = elasticsearchRestTemplate.suggest(suggestBuilder)
+    //    List<String> suggestions = new ArrayList<>();
+    //
+    //    searchHits.getSearchHits().forEach(hit -> {
+    //        suggestions.add(hit.getContent().getSuggestion().toString());
+    //    });
+    //
+    //    return ResultUtils.success(suggestions);
+    //}
+
     @GetMapping("/search/getSearchPrompt")
     public BaseResponse<List<String>> getSearchPrompt(@RequestParam String keyword) {
         SuggestBuilder suggestBuilder = new SuggestBuilder()
@@ -45,11 +71,12 @@ public class SuggestController {
 
         SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
 
-        List<String> suggestions = new ArrayList<>();
+        List<String> options = new ArrayList<>();
         searchHits.getSearchHits().forEach(hit -> {
-            suggestions.add(hit.getContent().getSuggestion().toString());
+            options.add(hit.getContent().toString());
         });
 
-        return ResultUtils.success(suggestions);
+        return ResultUtils.success(options);
     }
 }
+
