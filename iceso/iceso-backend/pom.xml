@@ -141,9 +141,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.16</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -151,9 +151,12 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <source>1.8</source> <!-- 设置为Java运行时版本支持的版本 -->
+                    <target>1.8</target> <!-- 设置为Java运行时版本支持的版本 -->
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 
 </project>

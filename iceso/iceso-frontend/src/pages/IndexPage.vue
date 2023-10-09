@@ -9,7 +9,6 @@
         @select="onSearch"
         size="large"
         style="width: 90%"
-        @search="getSearchPrompt"
       />
       <!-- 点击搜索，对应不选建议，直接点击搜索事件 -->
       <a-button
