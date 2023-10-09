@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @author https://github.com/liice
  */
 @Configuration
-@MapperScan("com.ice.soso.mapper")
+//@MapperScan("com.ice.soso.mapper")
 public class MyBatisPlusConfig {
 
     /**
