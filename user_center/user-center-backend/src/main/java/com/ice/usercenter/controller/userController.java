@@ -54,10 +54,12 @@ public class userController {
         String userPassword = userRegisterRequest.getUserPassword();
         String planetCode = userRegisterRequest.getPlanetCode();
         String checkPassword = userRegisterRequest.getCheckPassword();
+        String avatarUrl=userRegisterRequest.getAvatarUrl();
+        String username = userRegisterRequest.getUsername();
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, planetCode)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        long result = userService.userRegister(userAccount, userPassword, checkPassword, planetCode);
+        long result = userService.userRegister(username,avatarUrl,userAccount, userPassword, checkPassword, planetCode);
         return ResultUtils.success(result);
 
     }

@@ -15,13 +15,15 @@ import java.util.List;
 public interface UserService extends IService<User> {
   /**
    * 用户注册
-   * @param userAccount 用户账户
-   * @param userPassword 用户密码
-   * @param checkPassword 校验密码
-   * @param planetCode 星球编号
-   * @return 用户id
+   * @param username
+   * @param avatarUrl
+   * @param userAccount
+   * @param userPassword
+   * @param checkPassword
+   * @param planetCode
+   * @return
    */
-  long userRegister(String userAccount,String userPassword,String checkPassword,String planetCode);
+  long userRegister(String username,String avatarUrl, String userAccount,String userPassword,String checkPassword,String planetCode);
 
   /**
    * 用户登录

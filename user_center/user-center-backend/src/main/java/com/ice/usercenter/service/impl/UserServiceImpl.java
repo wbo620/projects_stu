@@ -39,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private UserMapper mapper;
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode) {
+    public long userRegister(String username,String avataUrl,String userAccount, String userPassword, String checkPassword, String planetCode) {
         //1.校验
         //非空校验
         if (StringUtils.isAllBlank(userAccount, userPassword, checkPassword, planetCode)) {
@@ -88,6 +88,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
         user.setPlanetCode(planetCode);
+        user.setAvatarUrl(avataUrl);
+        user.setUsername(username);
         int saveResult = mapper.insert(user);
 
         //boolean saveResult = this.save(user);
