@@ -9,9 +9,9 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.ice</groupId>
-  <artifactId>user-center</artifactId>
+  <artifactId>user-center-backend</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <name>user-center</name>
   <description>user-center</description>
   <properties>

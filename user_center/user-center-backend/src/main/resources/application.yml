@@ -1,11 +1,18 @@
 spring:
   application:
-    name: user_center
+    name: user-center
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/yupi
     username: root
     password: 123123123
+    #    服务器
+#  datasource:
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://10.211.55.8:3306/user_center
+#    username: user_center
+#    password: 123123123
+
   # session 失效时间
   session:
     timeout: 86400
