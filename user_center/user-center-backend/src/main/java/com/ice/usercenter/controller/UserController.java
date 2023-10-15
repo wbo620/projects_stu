@@ -31,7 +31,7 @@ import static com.ice.usercenter.contant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/user")
-public class userController {
+public class UserController {
 
     @Resource
     private UserService userService;
@@ -46,7 +46,6 @@ public class userController {
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
-            //
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
@@ -54,12 +53,12 @@ public class userController {
         String userPassword = userRegisterRequest.getUserPassword();
         String planetCode = userRegisterRequest.getPlanetCode();
         String checkPassword = userRegisterRequest.getCheckPassword();
-        String avatarUrl=userRegisterRequest.getAvatarUrl();
+        String avatarUrl = userRegisterRequest.getAvatarUrl();
         String username = userRegisterRequest.getUsername();
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, planetCode)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        long result = userService.userRegister(username,avatarUrl,userAccount, userPassword, checkPassword, planetCode);
+        long result = userService.userRegister(username, avatarUrl, userAccount, userPassword, checkPassword, planetCode);
         return ResultUtils.success(result);
 
     }
@@ -81,6 +80,7 @@ public class userController {
         long userId = currentUser.getId();
         // TODO 校验用户是否合法
         User user = userService.getById(userId);
+        //脱敏后的用户
         User safetyUser = userService.getSafetyUser(user);
         return ResultUtils.success(safetyUser);
     }
@@ -105,8 +105,8 @@ public class userController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.login(userAccount, userPassword, request);
-        if (user == null){
-    throw new BusinessException(ErrorCode.PARAMS_ERROR,"账号或密码错误,请重试!");
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号或密码错误,请重试!");
         }
         return ResultUtils.success(user);
     }

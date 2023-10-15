@@ -17,6 +17,7 @@ public class UserRegisterRequest implements Serializable {
   private String checkPassword;
   private String planetCode;
 
+  //接收默认昵称和头像
   private String username;
   private String avatarUrl;
 
