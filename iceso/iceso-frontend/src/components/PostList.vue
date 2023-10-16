@@ -1,12 +1,10 @@
 <template>
   <a-config-provider>
-    <!--    :theme="{-->
-    <!--      token: {-->
-    <!--        colorPrimary: '#eea6b7',-->
-    <!--      },-->
-    <!--    }"-->
-    <!--  >-->
-    <a-list item-layout="horizontal" :data-source="props.postList">
+    <a-list
+      item-layout="horizontal"
+      :data-source="pagedPostList"
+      style="margin-bottom: 20px"
+    >
       <template #renderItem="{ item }">
         <a-list-item>
           <a-list-item-meta>
@@ -28,23 +26,34 @@
         </a-list-item>
       </template>
     </a-list>
+    <MyPagination
+      v-model:currentPage="currentPage"
+      :total="props.postList.length"
+      :page-size="pageSize"
+    />
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
+import { computed, defineProps, ref, withDefaults } from "vue";
+import MyPagination from "@/components/MyPagination.vue";
 import yaya from "../assets/yaya.jpg";
-import { defineComponent, defineProps, withDefaults } from "vue";
-
-defineComponent({
-  name: "PostList",
-});
 
 interface Props {
-  postList: any[];
+  postList: [];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   postList: () => [],
+});
+
+const currentPage = ref(1);
+const pageSize = 20;
+
+const pagedPostList = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  return props.postList.slice(startIndex, endIndex);
 });
 </script>
 

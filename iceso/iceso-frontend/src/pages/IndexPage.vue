@@ -63,7 +63,7 @@ const activeKey = route.params.category;
 const initSearchParams = {
   type: activeKey,
   text: "",
-  pageSize: 20,
+  pageSize: 50,
   pageNum: 1,
 };
 //初始化查找参数
@@ -133,7 +133,6 @@ const onSearch = (value: string) => {
 
 //列表页切换事件：地址参数改变
 const onTabChange = (key: string) => {
-  //searchParams.value.type = `${key}`;
   router.push({
     path: `/${key}`,
     query: {

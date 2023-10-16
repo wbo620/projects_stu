@@ -20,8 +20,9 @@
   <div class="VideoList">
     <a-list
       item-layout="horizontal"
-      :data-source="props.videoList"
+      :data-source="pagedVideoList"
       :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 3, xxl: 3 }"
+      style="margin-bottom: 20px"
     >
       <template #renderItem="{ item }">
         <a-list>
@@ -46,11 +47,17 @@
         </a-list>
       </template>
     </a-list>
+    <MyPagination
+      v-model:currentPage="currentPage"
+      :total="props.videoList.length"
+      :page-size="pageSize"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, withDefaults } from "vue";
+import { computed, defineProps, ref, withDefaults } from "vue";
+import MyPagination from "@/components/MyPagination.vue";
 
 interface Props {
   videoList: [];
@@ -58,5 +65,13 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   videoList: () => [],
+});
+const currentPage = ref(1);
+const pageSize = 18;
+
+const pagedVideoList = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  return props.videoList.slice(startIndex, endIndex);
 });
 </script>

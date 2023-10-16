@@ -1,25 +1,9 @@
-<style scoped>
-.Body {
-  margin: 5px;
-  height: 100%;
-}
-
-.Text {
-  text-align: center;
-}
-
-.row {
-  height: 300px;
-}
-
-.img {
-  height: 220px;
-}
-</style>
 <template>
-  <div class="PictureList">
+  <a-config-provider>
     <a-list
       item-layout="horizontal"
+      :data-source="pagedPictureList"
+      style="margin-bottom: 20px"
       :grid="{
         gutter: 16,
         xs: 1,
@@ -29,7 +13,6 @@
         xl: 5,
         xxl: 3,
       }"
-      :data-source="props.pictureList"
     >
       <template #renderItem="{ item }">
         <a-list>
@@ -50,11 +33,17 @@
         </a-list>
       </template>
     </a-list>
-  </div>
+    <MyPagination
+      v-model:currentPage="currentPage"
+      :total="props.pictureList.length"
+      :page-size="pageSize"
+    />
+  </a-config-provider>
 </template>
 
 <script setup lang="ts">
-import { defineProps, withDefaults } from "vue";
+import { computed, defineProps, ref, withDefaults } from "vue";
+import MyPagination from "@/components/MyPagination.vue";
 
 interface Props {
   pictureList: [];
@@ -63,4 +52,32 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   pictureList: () => [],
 });
+
+const currentPage = ref(1);
+const pageSize = 20;
+
+const pagedPictureList = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  return props.pictureList.slice(startIndex, endIndex);
+});
 </script>
+
+<style scoped>
+.Body {
+  margin: 5px;
+  height: 100%;
+}
+
+.Text {
+  text-align: center;
+}
+
+.row {
+  height: 300px;
+}
+
+.img {
+  height: 220px;
+}
+</style>
