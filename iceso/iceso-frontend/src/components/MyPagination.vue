@@ -1,11 +1,13 @@
 <template>
-  <a-pagination
-    :current="currentPage"
-    :total="total"
-    :page-size="pageSize"
-    @change="handlePageChange"
-    class="pagination-bottom"
-  />
+  <div class="top">
+    <a-pagination
+      :current="currentPage"
+      :total="total"
+      :page-size="pageSize"
+      @change="handlePageChange"
+      class="pagination-bottom"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -21,6 +23,8 @@ const emit = defineEmits(["update:currentPage"]);
 
 const handlePageChange = (page) => {
   emit("update:currentPage", page);
+  // 滚动到页面顶部，持续时间为0.1秒
+  window.scrollTo({ top: 0, behavior: "auto" });
 };
 </script>
 
