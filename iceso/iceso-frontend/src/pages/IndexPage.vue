@@ -33,6 +33,9 @@
       </a-tabs>
     </div>
   </div>
+  <!-- 添加回到顶部按钮 -->
+  <a-back-top />
+  <strong style="color: rgba(64, 64, 64, 0.6)" />
 </template>
 
 <script setup lang="ts">
