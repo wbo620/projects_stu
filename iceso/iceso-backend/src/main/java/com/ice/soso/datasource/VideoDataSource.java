@@ -3,6 +3,7 @@ package com.ice.soso.datasource;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ice.soso.model.entity.Video;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,8 +26,12 @@ import java.util.Map;
  */
 @Service
 public class VideoDataSource implements DataSource<Video> {
+    //TODO 更改视频接口为b站
     @Override
     public Page<Video> doSearch(String searchText, long pageNum, long pageSize) throws IOException {
+        if (searchText == null) {
+            searchText = "世界旅游胜地";
+        }
         String url = String.format("https://cn.bing.com/videos/search?q=%s&FORM=VDRE", searchText);
         Document doc = Jsoup.connect(url).get();
         Elements elements = doc.select(".dg_u");
