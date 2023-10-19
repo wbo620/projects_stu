@@ -10,7 +10,7 @@
         sm: 2,
         md: 4,
         lg: 4,
-        xl: 5,
+        xl: 4,
         xxl: 3,
       }"
     >
@@ -74,10 +74,10 @@ const pagedPictureList = computed(() => {
 }
 
 .row {
-  height: 300px;
+  height: 320px;
 }
 
 .img {
-  height: 220px;
+  height: 250px;
 }
 </style>

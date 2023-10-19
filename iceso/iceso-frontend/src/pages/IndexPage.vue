@@ -61,7 +61,6 @@ const router = useRouter();
 const route = useRoute();
 // 动态获取路由参数
 const activeKey = route.params.category;
-
 // 初始地址栏参数
 const initSearchParams = {
   type: activeKey,
@@ -145,3 +144,12 @@ const onTabChange = (key: string) => {
   });
 };
 </script>
+
+<style scoped>
+#spin {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
